@@ -6,13 +6,17 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack --mode=production",
-    "dev": "webpack --mode=development"
+    "dev": "webpack --mode=development",
+    "dev:watch": "webpack --mode-development --watch"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/frontend-js/core.git"
   },
   "author": "Luke Mckeen",
+  "contributors": [
+    "Jaclyn Staples <jaclynonacloud@gmail.com> (http://jaclynonacloud.github.io)"
+  ],
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/frontend-js/core/issues"
