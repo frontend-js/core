@@ -1,16 +1,23 @@
 import { Template } from './template'
 import { Styles } from './styles'
 
+const _name = Symbol('name')
 const _root = Symbol('root')
 const _dom = Symbol('dom')
+const _components = Symbol('components')
+const _options = Symbol('options')
 
 export default class Component {
-	constructor({
-		root,
-		template,
-		data = {},
-		styles = ''
-	}) {
+	constructor(options) {
+		const {
+			root,
+			template,
+			name = '',
+			data = {},
+			styles = '',
+			components = {}
+		} = options
+
 		let rootEl = root
 
 		if (typeof root === 'string') {
@@ -20,7 +27,14 @@ export default class Component {
 			return console.error('unable to find root element')
 		}
 
-		const dom = new Template(template, data).data
+		const childComponents = {}
+		Object.keys(components).forEach(objKey => {
+			const comp = components[objKey]
+			const key = comp.name || objKey
+			childComponents[key] = Component.duplicate(comp)
+		})
+
+		const dom = new Template(template, data, childComponents).data
 		
 		if (styles) {
 			const css = new Styles(styles)
@@ -33,8 +47,23 @@ export default class Component {
 			rootEl.appendChild(dom)
 		}
 
+		this[_name] = name
 		this[_root] = rootEl
 		this[_dom] = dom
+		this[_components] = childComponents
+		this[_options] = options
+	}
+
+	static duplicate(component) {
+		return new Component(component.options)
+	}
+
+	get options() {
+		return this[_options]
+	}
+
+	get name() {
+		return this[_name]
 	}
 
 	get root() {
@@ -43,6 +72,10 @@ export default class Component {
 
 	get dom() {
 		return this[_dom]
+	}
+
+	get components() {
+		return this[_components]
 	}
 
 	appendChild(child) {
